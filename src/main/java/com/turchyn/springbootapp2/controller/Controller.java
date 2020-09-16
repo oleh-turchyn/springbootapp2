@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.List;
 import java.util.Map;
 
 @org.springframework.stereotype.Controller
@@ -24,9 +23,15 @@ public class Controller {
     }
 
     @GetMapping("/main")
-    public String main(Map<String, Object> model) {
+    public String main(@RequestParam(required = false ,defaultValue = "")String filter,Map<String, Object> model) {
         Iterable<Message> messages = messageRepository.findAll();
+        if (filter != null && !filter.isEmpty()) {
+            messages = messageRepository.findBytag(filter);
+        } else {
+            messages = messageRepository.findAll();
+        }
         model.put("messages", messages);
+        model.put("filter",filter);
         return "main";
     }
 
@@ -37,18 +42,6 @@ public class Controller {
         Message message = new Message(text, tag, user);
         messageRepository.save(message);
         Iterable<Message> messages = messageRepository.findAll();
-        model.put("messages", messages);
-        return "main";
-    }
-
-    @PostMapping("/filter")
-    public String filter(@RequestParam String filter, Map<String, Object> model) {
-        Iterable<Message> messages;
-        if (filter != null && !filter.isEmpty()) {
-            messages = messageRepository.findBytag(filter);
-        } else {
-            messages = messageRepository.findAll();
-        }
         model.put("messages", messages);
         return "main";
     }
