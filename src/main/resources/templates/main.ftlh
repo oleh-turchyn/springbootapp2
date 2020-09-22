@@ -3,6 +3,7 @@
 <@c.page>
     <div>
         <@l.logout />
+        <span><a href="/user">User list</a></span>
     </div>
     <div>
         <form method="post">
@@ -22,9 +23,7 @@
             <b>${message.id}</b>
             <span>${message.text}</span>
             <i>${message.tag}</i>
-            <i>${message.authorName}</i>
+            <i>${message.author}</i>
         </div>
-        <#else>
-        No message
     </#list>
 </@c.page>
